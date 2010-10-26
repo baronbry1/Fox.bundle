@@ -11,7 +11,7 @@ FOX_THUMB                   = "icon-default.png"
 
 ####################################################################################################
 def Start():
-  Plugin.AddPrefixHandler(PLUGIN_PREFIX, MainMenu, "FOX", FOX_ART, FOX_THUMB)
+  Plugin.AddPrefixHandler(PLUGIN_PREFIX, MainMenu, "FOX", FOX_THUMB, FOX_ART)
   Plugin.AddViewGroup("InfoList", viewMode="InfoList", mediaType="items")
 
   MediaContainer.art        = R(FOX_ART)
@@ -74,6 +74,7 @@ def VideoPage(sender, pageUrl):
       convivaID = content2.xpath('//div[@id="player"]//object/param[@name="convivaID"]')[0].get("value")
 
       truevidUrl = "http://admin.brightcove.com/viewer/us1.24.00.06a/BrightcoveBootloader.swf?purl=" + pageUrl2 + "videoPlayer=" + videoID + "&adZone=" + adZone + "&autoStart=true" + "&bgcolor=" + bgcolor + "&convivaEnabled=" + convivaEnabled + "&convivaID=" + convivaID + "&dynamicStreaming=" + dynamicStreaming + "&flashID=myExperience" + "&height=" + height + "&isVid=" + isVid + "&omnitureAccountID=" + omnitureAccountID + "&optimizedContentLoad=" + optimizedContentLoad + "&playerID=" + playerID + "&publisherID=" + publisherID + "&showcode=" + showCode + "&width=" + width +"&wmode=" + wmode
+      Log(truevidUrl)
 
       dir.Append(WebVideoItem(truevidUrl, title=title2, subtitle=title1, summary=summary))
     return dir

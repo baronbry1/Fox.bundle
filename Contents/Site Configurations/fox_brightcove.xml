@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://admin.brightcove.com.*fox\.com"
+	plugin="BrightcoveBootloader.swf"
+	initialState="loading"
+	windowWidth="640"
+	windowHeight="560"
+	version="1.0">
+
+	<crop x="0" y="100" width="640" height="360" />
+
+	<!-- LOADING -->
+	<state name="loading">
+		<event>
+			<condition>
+				<javascript script="true ? 1 : 0" matches="1" />
+			</condition>
+			<action>
+				<pause time="5000" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PLAYING -->
+	<state name="playing">
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="10" y="10" />
+				<goto state="paused" />
+			</action>
+		</event>
+
+		<!-- Video ends -->
+		<event>
+			<condition>
+				<url matches="media\.fox\.com.*\.jpg" />
+			</condition>
+			<action>
+				<goto state="end" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">		
+		<event>
+			<condition>
+			 	<command name="play" />
+			</condition>
+			<action>
+				<click x="10" y="10" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>	
+
+</site>
