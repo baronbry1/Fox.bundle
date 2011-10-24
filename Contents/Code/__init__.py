@@ -12,7 +12,7 @@ def Start():
 
   MediaContainer.art        = R(FOX_ART)
   DirectoryItem.thumb       = R(FOX_THUMB)
-  WebVideoItem.thumb        = R(FOX_THUMB)
+  VideoItem.thumb        = R(FOX_THUMB)
 
   HTTP.CacheTime = CACHE_1HOUR
   HTTP.Headers['User-agent'] = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.11) Gecko/20101012 Firefox/3.6.11"
@@ -45,32 +45,36 @@ def VideoPage(sender, pageUrl):
       airdate = item2.xpath('li[@class="airDate"]')[0].text
       title2 = title2 + " - " + airdate
 
-      content2 = HTML.ElementFromURL(vidUrl)
-      pageUrl2 = pageUrl
-      pageUrl2 = pageUrl2.replace("/","%2F")
-      pageUrl2 = pageUrl2.replace(":","%3A")
-      pageUrl2 = pageUrl2 + "&%40"
-
-      videoID = content2.xpath('//div[@id="player"]//object/param[@name="@videoPlayer"]')[0].get("value")
-      bgcolor = content2.xpath('//div[@id="player"]//object/param[@name="bgcolor"]')[0].get("value")
-      bgcolor = bgcolor.replace("#","%23")
-      width = content2.xpath('//div[@id="player"]//object/param[@name="width"]')[0].get("value")
-      height = content2.xpath('//div[@id="player"]//object/param[@name="height"]')[0].get("value")
-      playerID = content2.xpath('//div[@id="player"]//object/param[@name="playerID"]')[0].get("value")
-      publisherID = content2.xpath('//div[@id="player"]//object/param[@name="publisherID"]')[0].get("value")
-      isVid = content2.xpath('//div[@id="player"]//object/param[@name="isVid"]')[0].get("value")
-      videoPlayer = content2.xpath('//div[@id="player"]//object/param[@name="@videoPlayer"]')[0].get("value")
-      wmode = content2.xpath('//div[@id="player"]//object/param[@name="wmode"]')[0].get("value")
-      adZone = content2.xpath('//div[@id="player"]//object/param[@name="adZone"]')[0].get("value")
-      showCode = content2.xpath('//div[@id="player"]//object/param[@name="showCode"]')[0].get("value")
-      omnitureAccountID = content2.xpath('//div[@id="player"]//object/param[@name="omnitureAccountID"]')[0].get("value")
-      dynamicStreaming = content2.xpath('//div[@id="player"]//object/param[@name="dynamicStreaming"]')[0].get("value")
-      optimizedContentLoad = content2.xpath('//div[@id="player"]//object/param[@name="optimizedContentLoad"]')[0].get("value")
-      convivaEnabled = content2.xpath('//div[@id="player"]//object/param[@name="convivaEnabled"]')[0].get("value")
-      convivaID = content2.xpath('//div[@id="player"]//object/param[@name="convivaID"]')[0].get("value")
-
-      truevidUrl = "http://admin.brightcove.com/viewer/us1.24.00.06a/BrightcoveBootloader.swf?purl=" + pageUrl2 + "videoPlayer=" + videoID + "&adZone=" + adZone + "&autoStart=true" + "&bgcolor=" + bgcolor + "&convivaEnabled=" + convivaEnabled + "&convivaID=" + convivaID + "&dynamicStreaming=" + dynamicStreaming + "&flashID=myExperience" + "&height=" + height + "&isVid=" + isVid + "&omnitureAccountID=" + omnitureAccountID + "&optimizedContentLoad=" + optimizedContentLoad + "&playerID=" + playerID + "&publisherID=" + publisherID + "&showcode=" + showCode + "&width=" + width +"&wmode=" + wmode
-#      Log(truevidUrl)
-
-      dir.Append(WebVideoItem(truevidUrl, title=title2, subtitle=title1, summary=summary))
+      dir.Append(VideoItem(key=Function(PlayVideo, url=vidUrl, title=title2), title=title2, subtitle=title1, summary=summary))
     return dir
+
+####################################################################################################
+def PlayVideo(sender, url, title):
+  content2 = HTML.ElementFromURL(url)
+  pageUrl2 = pageUrl
+  pageUrl2 = pageUrl2.replace("/","%2F")
+  pageUrl2 = pageUrl2.replace(":","%3A")
+  pageUrl2 = pageUrl2 + "&%40"
+
+  videoID = content2.xpath('//div[@id="player"]//object/param[@name="@videoPlayer"]')[0].get("value")
+  bgcolor = content2.xpath('//div[@id="player"]//object/param[@name="bgcolor"]')[0].get("value")
+  bgcolor = bgcolor.replace("#","%23")
+  width = content2.xpath('//div[@id="player"]//object/param[@name="width"]')[0].get("value")
+  height = content2.xpath('//div[@id="player"]//object/param[@name="height"]')[0].get("value")
+  playerID = content2.xpath('//div[@id="player"]//object/param[@name="playerID"]')[0].get("value")
+  publisherID = content2.xpath('//div[@id="player"]//object/param[@name="publisherID"]')[0].get("value")
+  isVid = content2.xpath('//div[@id="player"]//object/param[@name="isVid"]')[0].get("value")
+  videoPlayer = content2.xpath('//div[@id="player"]//object/param[@name="@videoPlayer"]')[0].get("value")
+  wmode = content2.xpath('//div[@id="player"]//object/param[@name="wmode"]')[0].get("value")
+  adZone = content2.xpath('//div[@id="player"]//object/param[@name="adZone"]')[0].get("value")
+  showCode = content2.xpath('//div[@id="player"]//object/param[@name="showCode"]')[0].get("value")
+  omnitureAccountID = content2.xpath('//div[@id="player"]//object/param[@name="omnitureAccountID"]')[0].get("value")
+  dynamicStreaming = content2.xpath('//div[@id="player"]//object/param[@name="dynamicStreaming"]')[0].get("value")
+  optimizedContentLoad = content2.xpath('//div[@id="player"]//object/param[@name="optimizedContentLoad"]')[0].get("value")
+  convivaEnabled = content2.xpath('//div[@id="player"]//object/param[@name="convivaEnabled"]')[0].get("value")
+  convivaID = content2.xpath('//div[@id="player"]//object/param[@name="convivaID"]')[0].get("value")
+
+  truevidUrl = "http://admin.brightcove.com/viewer/us1.24.00.06a/BrightcoveBootloader.swf?purl=" + pageUrl2 + "videoPlayer=" + videoID + "&adZone=" + adZone + "&autoStart=true" + "&bgcolor=" + bgcolor + "&convivaEnabled=" + convivaEnabled + "&convivaID=" + convivaID + "&dynamicStreaming=" + dynamicStreaming + "&flashID=myExperience" + "&height=" + height + "&isVid=" + isVid + "&omnitureAccountID=" + omnitureAccountID + "&optimizedContentLoad=" + optimizedContentLoad + "&playerID=" + playerID + "&publisherID=" + publisherID + "&showcode=" + showCode + "&width=" + width +"&wmode=" + wmode
+  # Log(truevidUrl)
+
+  return Redirect(WebVideoItem(truevidUrl))
