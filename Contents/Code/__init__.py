@@ -17,7 +17,7 @@ def Start():
 
 ####################################################################################################
 def MainMenu():
-    dir = MediaContainer(mediaType='video')
+    oc = ObjectContainer()
     content = HTML.ElementFromURL(FOX_FULL_EPISODES_SHOW_LIST)
 
     for item in content.xpath('//li[@class="episodeListItem"]/div[@class="showInfo"]'):
@@ -27,25 +27,32 @@ def MainMenu():
       summary = item.xpath("h4")[0].text
 
       if (titleUrl.count('americasmostwanted')) == 0:
-        dir.Append(Function(DirectoryItem(VideoPage, title, summary), pageUrl=titleUrl))
-    return dir 
+          oc.add(DirectoryObject(key=Callback(VideoPage, pageUrl=titleUrl, title=title), title=title, summary=summary))
+    return oc
 
 ####################################################################################################
-def VideoPage(sender, pageUrl):
-    dir = MediaContainer(title2=sender.itemTitle)
+def VideoPage(pageUrl):
+    oc = ObjectContainer(title2=title)
     content = HTML.ElementFromURL(pageUrl)
 
-    for item2 in content.xpath('//ul[@id="fullEpisodesList"]/li[contains(@class,"episode")]/ul'):
-      vidUrl = FOX_URL + item2.xpath('li[@class="episodeName"]/span/a')[0].get('href')
-      title2 = item2.xpath('li[@class="episodeName"]/span/a')[0].text
-      title1 = item2.xpath('li[@class="episodeName"]/span/a')[0].text
-      summary = item2.xpath('li[@class="description"]')[0].get('href')
-      airdate = item2.xpath('li[@class="airDate"]')[0].text
-      title2 = title2 + " - " + airdate
-
-      dir.Append(VideoItem(key=Function(PlayVideo, url=vidUrl, title=title2), title=title2, subtitle=title1, summary=summary))
-    return dir
-
+    for episode in content.xpath('//ul[@id="fullEpisodesList"]/li[contains(@class,"episode")]'):
+        details = JSON.ObjectFromString(episode.xpath('.//script[@class="videoObject"]')[0].text)
+        episode_title = details['name']
+        summary = details['shortDescription']
+        thumbs = [details['videoStillURL'], details['thumbnailURL']]
+        video_url = details['videoURL']
+        duration = int(details['length'])*1000
+        index = int(details['episode'])
+        season = int(details['season'])
+        rating = details['rating']
+        date = Datetime.ParseDate(details['airdate']).date()
+      
+        oc.add(EpisodeObject(url=video_url, title=episode_title, show=title, summary=summary, index=index,
+            season=season, duration=duration, content_rating=rating, originally_available_at=date,
+            thumb=Resource.ContentsOfURLWithFallback(url=thumbs, fallback=FOX_THUMB)))
+            
+    return oc
+      
 ####################################################################################################
 def PlayVideo(sender, url, title):
   content2 = HTML.ElementFromURL(url)
