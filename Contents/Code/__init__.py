@@ -8,12 +8,10 @@ FOX_THUMB                   = "icon-default.png"
 ####################################################################################################
 def Start():
   Plugin.AddPrefixHandler(PLUGIN_PREFIX, MainMenu, "FOX", FOX_THUMB, FOX_ART)
-  Plugin.AddViewGroup("InfoList", viewMode="InfoList", mediaType="items")
 
-  MediaContainer.art        = R(FOX_ART)
-  DirectoryItem.thumb       = R(FOX_THUMB)
-  VideoItem.thumb        = R(FOX_THUMB)
-
+  ObjectContainer.art        = R(FOX_ART)
+  DirectoryObject.thumb       = R(FOX_THUMB)
+  
   HTTP.CacheTime = CACHE_1HOUR
   HTTP.Headers['User-agent'] = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.11) Gecko/20101012 Firefox/3.6.11"
 
