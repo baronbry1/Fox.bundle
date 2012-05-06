@@ -9,7 +9,8 @@ FOX_THUMB                   = "icon-default.png"
 def Start():
   Plugin.AddPrefixHandler(PLUGIN_PREFIX, MainMenu, "FOX", FOX_THUMB, FOX_ART)
 
-  ObjectContainer.art        = R(FOX_ART)
+  ObjectContainer.art         = R(FOX_ART)
+  ObjectContainer.title1      = "FOX"
   DirectoryObject.thumb       = R(FOX_THUMB)
   
   HTTP.CacheTime = CACHE_1HOUR
@@ -31,16 +32,17 @@ def MainMenu():
     return oc
 
 ####################################################################################################
-def VideoPage(pageUrl):
+def VideoPage(pageUrl, title):
     oc = ObjectContainer(title2=title)
     content = HTML.ElementFromURL(pageUrl)
 
     for episode in content.xpath('//ul[@id="fullEpisodesList"]/li[contains(@class,"episode")]'):
+        Log(episode.xpath('.//script[@class="videoObject"]')[0].text)
         details = JSON.ObjectFromString(episode.xpath('.//script[@class="videoObject"]')[0].text)
         episode_title = details['name']
         summary = details['shortDescription']
         thumbs = [details['videoStillURL'], details['thumbnailURL']]
-        video_url = details['videoURL']
+        video_url = pageUrl + '%s/' % details['id']
         duration = int(details['length'])*1000
         index = int(details['episode'])
         season = int(details['season'])
