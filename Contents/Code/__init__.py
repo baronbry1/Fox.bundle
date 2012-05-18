@@ -37,8 +37,15 @@ def VideoPage(pageUrl, title):
     content = HTML.ElementFromURL(pageUrl)
 
     for episode in content.xpath('//ul[@id="fullEpisodesList"]/li[contains(@class,"episode")]'):
-        Log(episode.xpath('.//script[@class="videoObject"]')[0].text)
         details = JSON.ObjectFromString(episode.xpath('.//script[@class="videoObject"]')[0].text)
+        id = str(details['id'])
+        episode_html = content.xpath('//li[@data-video-id="'+id+'"]')[0]
+        locked = episode_html.xpath('.//span[@class="playerStatus padlock"]')
+        if len(locked) > 0:
+          Log("Episode Locked. Skipping")
+          continue
+        else:
+          pass
         episode_title = details['name']
         summary = details['shortDescription']
         thumbs = [details['videoStillURL'], details['thumbnailURL']]
