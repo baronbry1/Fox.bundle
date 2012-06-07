@@ -49,7 +49,7 @@ def VideoPage(pageUrl, title):
         episode_title = details['name']
         summary = details['shortDescription']
         thumbs = [details['videoStillURL'], details['thumbnailURL']]
-        video_url = pageUrl + '%s/' % details['id']
+        video_url = pageUrl + '/%s/' % details['id']
         duration = int(details['length'])*1000
         index = int(details['episode'])
         season = int(details['season'])
