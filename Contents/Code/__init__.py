@@ -22,13 +22,19 @@ def MainMenu():
     content = HTML.ElementFromURL(FOX_FULL_EPISODES_SHOW_LIST)
 
     for item in content.xpath('//li[@class="episodeListItem"]/div[@class="showInfo"]'):
-      titles = item.xpath("a")
-      titleUrl = FOX_URL + titles[1].get('href')
-      title = item.xpath("h3")[0].text
-      summary = item.xpath("h4")[0].text
+        titles = item.xpath("a")
+        link = titles[1].get('href')
+        if link.startswith('http'):
+            titleUrl = link
+        elif link == '':
+            continue
+        else:
+            titleUrl = FOX_URL + link
+        title = item.xpath("h3")[0].text
+        summary = item.xpath("h4")[0].text
 
-      if (titleUrl.count('americasmostwanted')) == 0:
-          oc.add(DirectoryObject(key=Callback(VideoPage, pageUrl=titleUrl, title=title), title=title, summary=summary))
+        if (titleUrl.count('americasmostwanted')) == 0:
+            oc.add(DirectoryObject(key=Callback(VideoPage, pageUrl=titleUrl, title=title), title=title, summary=summary))
     return oc
 
 ####################################################################################################
@@ -42,14 +48,17 @@ def VideoPage(pageUrl, title):
         episode_html = content.xpath('//li[@data-video-id="'+id+'"]')[0]
         locked = episode_html.xpath('.//span[@class="playerStatus padlock"]')
         if len(locked) > 0:
-          Log("Episode Locked. Skipping")
-          continue
+            Log("Episode Locked. Skipping")
+            continue
         else:
-          pass
+            pass
         episode_title = details['name']
         summary = details['shortDescription']
         thumbs = [details['videoStillURL'], details['thumbnailURL']]
-        video_url = pageUrl + '/%s/' % details['id']
+        if pageUrl.endswith('/'):
+            video_url = pageUrl + '%s/' % details['id']
+        else:
+            video_url = pageUrl + '/%s/' % details['id']
         duration = int(details['length'])*1000
         index = int(details['episode'])
         season = int(details['season'])
