@@ -11,6 +11,8 @@
 			<string>webkit</string>
 		</array>
 	</dict>
+	<key>PlexClientPlatformExclusions</key>
+	<string>Roku</string>
 	<key>PlexFrameworkVersion</key>
 	<string>2</string>
 	<key>PlexPluginRegions</key>
